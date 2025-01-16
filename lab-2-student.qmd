@@ -85,6 +85,9 @@ We will be investigating the animal species diversity and weights found within p
 
 **1. Using the `read_csv()` function, write the code necessary to load in the `surveys.csv` dataset (stored in the data folder). For simplicity, name the data `surveys`.**
 
+Sources used for this question:
+https://iqss.github.io/dss-workshops/R/Rintro/base-r-cheat-sheet.pdf
+
 ```{r}
 #| label: load-data
 
@@ -94,6 +97,9 @@ print(surveys)
 ```
 
 **2. What are the dimensions (# of rows and columns) of these data?**
+
+Sources used for this question:
+https://iqss.github.io/dss-workshops/R/Rintro/base-r-cheat-sheet.pdf
 
 ```{r}
 #| label: find dimensions
@@ -106,6 +112,9 @@ print(surveys.columns)
 ```
 
 **3. What are the data types of the variables in this dataset?**
+
+Sources used:
+https://www.statology.org/r-check-data-type/
 
 ```{r}
 data_types <- sapply(surveys, class)
@@ -127,6 +136,8 @@ Let's get started!
 ## Scatterplot
 
 **4. First, let's create a scatterplot of the relationship between `weight` (on the** $x$-axis) and `hindfoot_length` (on the $y$-axis).
+sources used:
+My PA-2-ggplot.qmd from this week
 
 ```{r}
 #| label: scatterplot
@@ -143,6 +154,7 @@ ggplot(data = surveys,
 We can see there are **a lot** of points plotted on top of each other. Let's try and modify this plot to extract more information from it.
 
 **5. Let's add transparency (`alpha`) to the points, to make the points more transparent and (possibly) easier to see.**
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 ```{r}
 #| label: scatterplot
@@ -159,6 +171,7 @@ ggplot(data = surveys,
 Despite our best efforts there is still a substantial amount of overplotting occurring in our scatterplot. Let's try splitting the dataset into smaller subsets and see if that allows for us to see the trends a bit better.
 
 **6. Facet your scatterplot by `species`.**
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 ```{r}
 #| label: scatterplot
@@ -174,6 +187,8 @@ ggplot(data = surveys,
 ```
 
 **7. No plot is complete without axis labels and a title. Include reader friendly labels and a title to your plot.**
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
+
 
 ```{r}
 #| label: scatterplot
@@ -191,6 +206,7 @@ ggplot(data = surveys,
 It takes a larger cognitive load to read text that is rotated. It is common practice in many journals and media outlets to move the $y$-axis label to the top of the graph under the title.
 
 **8. Specify your** $y$-axis label to be empty and move the $y$-axis label into the subtitle.
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 #\| label: scatterplot
 
@@ -230,9 +246,14 @@ ggplot(data = surveys,
 
 **10. Create side-by-side boxplots to visualize the distribution of weight within each species.**
 
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
+
 A fundamental complaint of boxplots is that they do not plot the raw data. However, with **ggplot** we can add the raw points on top of the boxplots!
 
 **11. Add another layer to your previous plot that plots each observation.**
+
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
+
 
 ```{r}
 #| label: boxplot_with_points
@@ -254,6 +275,9 @@ ggplot(data = surveys,
 Alright, this should look less than optimal. Your points should appear rather stacked on top of each other. To make them less stacked, we need to jitter them a bit, using `geom_jitter()`.
 
 **12. Remove the previous layer and include a `geom_jitter()` layer instead.**
+
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
+
 
 ```{r}
 #| label: boxplot_with_jitter
@@ -277,6 +301,9 @@ That should look a bit better! But its really hard to see the points when everyt
 
 **13. Set the `color` aesthetic in `geom_jitter()` to change the color of the points and add set the `alpha` aesthetic to add transparency.** You are welcome to use whatever color you wish! Some of my favorites are "orange3" and "steelblue".
 
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
+
+
 ```{r}
 #| label: boxplot_with_jitter
 
@@ -298,6 +325,9 @@ ggplot(data = surveys,
 Great! Now that you can see the points, you should notice something odd: there are two colors of points still being plotted. Some of the observations are being plotted twice, once from `geom_boxplot()` as outliers and again from `geom_jitter()`!
 
 **14. Inspect the help file for `geom_boxplot()` and see how you can remove the outliers from being plotted by `geom_boxplot()`. Make this change in your code!**
+
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
+
 
 ```{r}
 #| label: boxplot_without_outliers
@@ -322,6 +352,9 @@ Some small changes can make **big** differences to plots. One of these changes a
 
 **15. Modify the** $x$-axis and $y$-axis labels to describe what is being plotted. Be sure to include any necessary units! You might also be getting overlap in the species names -- use `theme(axis.text.x = ____)` or `theme(axis.text.y = ____)` to turn the species axis labels 45 degrees.
 
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
+
+
 ```{r}
 #| label: boxplot_with_descriptive_labels
 
@@ -343,6 +376,9 @@ ggplot(data = surveys,
 Some people (and journals) prefer for boxplots to be stacked with a specific orientation! Let's practice changing the orientation of our boxplots.
 
 **16. Now copy-paste your boxplot code you've been adding to above. Flip the orientation of your boxplots. If you created horizontally stacked boxplots, your boxplots should now be stacked vertically. If you had vertically stacked boxplots, you should now stack your boxplots horizontally!**
+
+sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
+
 
 ```{r}
 #| label: rotated-boxplot
@@ -377,6 +413,8 @@ $H_A$: **At least one** rodent species has a different population mean weight.
 We're going to use the `aov()` function to carry out an ANOVA.
 
 **17. Using `aov()`, complete the code below to carry out the analysis.** You might want to look up the help documentation for `aov()`.
+
+source: https://www.scribbr.com/statistics/anova-in-r/
 
 ```{r}
 #| label: anova
