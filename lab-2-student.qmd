@@ -1,16 +1,27 @@
 ---
 title: "Lab 2: Exploring Rodents with `ggplot2`"
-author: "Your name here!"
-format: html
+author: "Sammy Paykel"
+date: "1/14/2025"
+format: 
+  html:
+    embed-resources: true
+    code-tools: true
+    code-fold: true
+    echo: true
+    self-contained: true
+    toc: true
+    theme: lux
 editor: source
-embed-resources: true
-code-tools: true
+markdown: 
+  wrap: 72
+execute:
+  echo: true
+  error: false
 ---
 
 # Part 1: GitHub Workflow
 
-Now that you have the Lab 2 repository cloned, you need to make sure these files
-are being tracked for **your** repository. To do this you need to:
+Now that you have the Lab 2 repository cloned, you need to make sure these files are being tracked for **your** repository. To do this you need to:
 
 -   Click the "Git" tab in upper right pane
 -   Check the "Staged" box for every file listed
@@ -19,42 +30,23 @@ are being tracked for **your** repository. To do this you need to:
 -   Click "Commit".
 -   Click the green "Push" button to send your local changes to GitHub.
 
-Now you are ready to go! Remember, as you are going through the lab I would 
-strongly recommend rendering your HTML and committing your after **every** 
-question! 
+Now you are ready to go! Remember, as you are going through the lab I would strongly recommend rendering your HTML and committing your after **every** question!
 
 ## Seeking Help
 
-Part of learning to program is learning from a variety of resources. Thus, I
-expect you will use resources that you find on the internet. There is, however,
-an important balance between copying someone else's code and
-*using their code to learn*. Therefore, if you use external resources, I want to
-know about it. 
+Part of learning to program is learning from a variety of resources. Thus, I expect you will use resources that you find on the internet. There is, however, an important balance between copying someone else's code and *using their code to learn*. Therefore, if you use external resources, I want to know about it.
 
-- If you used Google, you are expected to "inform" me of any resources you used
-by **pasting the link to the resource in a code comment next to where you used
-that resource**.
+-   If you used Google, you are expected to "inform" me of any resources you used by **pasting the link to the resource in a code comment next to where you used that resource**.
 
-- If you used ChatGPT, you are expected to "inform" me of the assistance you
-received by (1) indicating somewhere in the problem that you used ChatGPT 
-(e.g., below the question prompt or as a code comment), and (2) paste the
-link to your chat (using the Share button from ChatGPT).
+-   If you used ChatGPT, you are expected to "inform" me of the assistance you received by (1) indicating somewhere in the problem that you used ChatGPT (e.g., below the question prompt or as a code comment), and (2) paste the link to your chat (using the Share button from ChatGPT).
 
-Additionally, you are permitted and encouraged to work with your peers as you
-complete lab assignments, but **you are expected to do your own work**. Copying
-from each other is cheating, and letting people copy from you is also cheating.
-Please don't do either of those things.
+Additionally, you are permitted and encouraged to work with your peers as you complete lab assignments, but **you are expected to do your own work**. Copying from each other is cheating, and letting people copy from you is also cheating. Please don't do either of those things.
 
 # Lab Instructions
 
-The questions in this lab are noted with numbers and boldface. Each question
-will require you to produce code, whether it is one line or multiple lines.
+The questions in this lab are noted with numbers and boldface. Each question will require you to produce code, whether it is one line or multiple lines.
 
-This document is quite plain, meaning it does not have any special formatting.
-As part of your demonstration of creating professional looking Quarto documents,
-I would encourage you to spice your documents up (e.g., declaring execution
-options, specifying how your figures should be output, formatting your code
-output, etc.).
+This document is quite plain, meaning it does not have any special formatting. As part of your demonstration of creating professional looking Quarto documents, I would encourage you to spice your documents up (e.g., declaring execution options, specifying how your figures should be output, formatting your code output, etc.).
 
 # Setup
 
@@ -62,22 +54,16 @@ In the code chunk below, load in the packages necessary for your analysis. You s
 
 ```{r}
 #| label: setup
+#| message: false
 
+library(tidyverse)
 ```
 
 # Data Context
 
-The Portal Project is a long-term ecological study being conducted near Portal, 
-AZ. Since 1977, the site has been used to study the interactions among rodents,
-ants, and plants, as well as their respective responses to climate. To study the
-interactions among organisms, researchers experimentally manipulated access to
-24 study plots. This study has produced over 100 scientific papers and is one of
-the longest running ecological studies in the U.S.
+The Portal Project is a long-term ecological study being conducted near Portal, AZ. Since 1977, the site has been used to study the interactions among rodents, ants, and plants, as well as their respective responses to climate. To study the interactions among organisms, researchers experimentally manipulated access to 24 study plots. This study has produced over 100 scientific papers and is one of the longest running ecological studies in the U.S.
 
-We will be investigating the animal species diversity and weights found within
-plots at the Portal study site. The data are stored as a comma separated value
-(CSV) file. Each row holds information for a single animal, and the columns
-represent:
+We will be investigating the animal species diversity and weights found within plots at the Portal study site. The data are stored as a comma separated value (CSV) file. Each row holds information for a single animal, and the columns represent:
 
 | Column            | Description                        |
 |-------------------|------------------------------------|
@@ -102,74 +88,144 @@ represent:
 ```{r}
 #| label: load-data
 
+surveys <- read_csv("data/surveys.csv")
+
+print(surveys)
 ```
 
 **2. What are the dimensions (# of rows and columns) of these data?**
 
-<!-- You can either write code here or in the code chunk for #1, but I **must** see the code you used to address this question!  -->
+```{r}
+#| label: find dimensions
+
+surveys.rows <- nrow(surveys)
+surveys.columns <- ncol(surveys)
+
+print(surveys.rows)
+print(surveys.columns)
+```
 
 **3. What are the data types of the variables in this dataset?**
 
-<!-- You can either write code here or in the code chunk for #1, but I **must** see the code you used to address this question!  -->
+```{r}
+data_types <- sapply(surveys, class)
+print(data_types)
+```
 
 # Exploratory Data Analysis with **`ggplot2`**
 
-`ggplot()` graphics are built step by step by adding new elements. Adding layers
-in this fashion allows for extensive flexibility and customization of plots.
+`ggplot()` graphics are built step by step by adding new elements. Adding layers in this fashion allows for extensive flexibility and customization of plots.
 
-To build a `ggplot()`, we will use the following basic template that can be used
-for different types of plots:
+To build a `ggplot()`, we will use the following basic template that can be used for different types of plots:
 
-```{r}
-#| eval: false
-#| label: ggplot-template-code
+#\| eval: false #\| label: ggplot-template-code
 
-ggplot(data = <DATA>,
-       mapping = aes(<VARIABLE MAPPINGS>)) +
-  <GEOM_FUNCTION>()
-```
+ggplot(data = <DATA>, mapping = aes(<VARIABLE MAPPINGS>)) + <GEOM_FUNCTION>()
 
 Let's get started!
 
 ## Scatterplot
 
-**4. First, let's create a scatterplot of the relationship between `weight` (on
-the $x$-axis) and `hindfoot_length` (on the $y$-axis).**
+**4. First, let's create a scatterplot of the relationship between `weight` (on the** $x$-axis) and `hindfoot_length` (on the $y$-axis).
 
 ```{r}
 #| label: scatterplot
 
+ggplot(data = surveys,
+       mapping = aes(x = weight,
+                     y = hindfoot_length)) +
+  geom_point() + 
+  labs(title = "Relationship Between the Weight and Hind Foot Length",
+       x = "Weight",
+       y = "Hindfoot Length")
 ```
 
 We can see there are **a lot** of points plotted on top of each other. Let's try and modify this plot to extract more information from it.
 
 **5. Let's add transparency (`alpha`) to the points, to make the points more transparent and (possibly) easier to see.**
 
-<!-- Add code to the scatterplot you created for question 4! -->
+```{r}
+#| label: scatterplot
 
-Despite our best efforts there is still a substantial amount of overplotting occurring in our scatterplot. Let's try splitting the dataset into smaller
-subsets and see if that allows for us to see the trends a bit better.
+ggplot(data = surveys,
+       mapping = aes(x = weight,
+                     y = hindfoot_length)) +
+  geom_point(alpha = 0.5) + 
+  labs(title = "Relationship Between the Weight and Hind Foot Length",
+       x = "Weight",
+       y = "Hindfoot Length")
+```
+
+Despite our best efforts there is still a substantial amount of overplotting occurring in our scatterplot. Let's try splitting the dataset into smaller subsets and see if that allows for us to see the trends a bit better.
 
 **6. Facet your scatterplot by `species`.**
 
-<!-- Add code to the scatterplot you created for question 4 (and modified for question 5)! -->
+```{r}
+#| label: scatterplot
+
+ggplot(data = surveys,
+       mapping = aes(x = weight,
+                     y = hindfoot_length)) +
+  geom_point(alpha = 0.5) + 
+  facet_wrap(~species) + 
+  labs(title = "Relationship Between the Weight and Hind Foot Length",
+       x = "Weight",
+       y = "Hindfoot Length")
+```
 
 **7. No plot is complete without axis labels and a title. Include reader friendly labels and a title to your plot.**
 
-<!-- Continue to modify the plot you originally created for question 4! -->
+```{r}
+#| label: scatterplot
+
+ggplot(data = surveys,
+       mapping = aes(x = weight,
+                     y = hindfoot_length)) +
+  geom_point(alpha = 0.5) + 
+  facet_wrap(~species) + 
+  labs(title = "Relationship Between the Weight and Hind Foot Length",
+       x = "Weight (Grams)",
+       y = "Hindfoot Length (mm)")
+```
 
 It takes a larger cognitive load to read text that is rotated. It is common practice in many journals and media outlets to move the $y$-axis label to the top of the graph under the title.
 
-**8. Specify your $y$-axis label to be empty and move the $y$-axis label into the subtitle.** 
+**8. Specify your** $y$-axis label to be empty and move the $y$-axis label into the subtitle.
 
-<!-- Continue to modify the plot you originally created for question 4! -->
+#\| label: scatterplot
+
+```{r}
+#| label: scatterplot
+
+ggplot(data = surveys,
+       mapping = aes(x = weight,
+                     y = hindfoot_length)) +
+  geom_point(alpha = 0.5) + 
+  facet_wrap(~species) + 
+  labs(
+    title = "Relationship Between Weight and Hind Foot Length",
+    subtitle = "Y-axis represents Hindfoot Length (mm)",
+    x = "Weight (Grams)",
+    y = ""
+  )
+```
 
 ## Boxplots
 
 ```{r}
 #| label: boxplot
 
-
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Weight Across Species",
+    x = "Species",
+    y = "Weight (Grams)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 ```
 
 **10. Create side-by-side boxplots to visualize the distribution of weight within each species.**
@@ -178,36 +234,111 @@ A fundamental complaint of boxplots is that they do not plot the raw data. Howev
 
 **11. Add another layer to your previous plot that plots each observation.**
 
-<!-- Modify the plot you made for question 10! -->
+```{r}
+#| label: boxplot_with_points
 
-Alright, this should look less than optimal. Your points should appear rather stacked on top of each other. To make them less stacked, we need to jitter them
-a bit, using `geom_jitter()`.
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2, alpha = 0.5) +
+  labs(
+    title = "Distribution of Weight Across Species",
+    x = "Species",
+    y = "Weight (Grams)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+Alright, this should look less than optimal. Your points should appear rather stacked on top of each other. To make them less stacked, we need to jitter them a bit, using `geom_jitter()`.
 
 **12. Remove the previous layer and include a `geom_jitter()` layer instead.**
 
-<!-- Continue to modify the plot you made for question 10! -->
+```{r}
+#| label: boxplot_with_jitter
+
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.5) +
+  labs(
+    title = "Distribution of Weight Across Species",
+    x = "Species",
+    y = "Weight (Grams)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
 
 That should look a bit better! But its really hard to see the points when everything is black.
 
-**13. Set the `color` aesthetic in `geom_jitter()` to change the color of the points and add set the `alpha` aesthetic to add transparency.** You are welcome
-to use whatever color you wish! Some of my favorites are "orange3" and
-"steelblue".
+**13. Set the `color` aesthetic in `geom_jitter()` to change the color of the points and add set the `alpha` aesthetic to add transparency.** You are welcome to use whatever color you wish! Some of my favorites are "orange3" and "steelblue".
 
-<!-- Continue to modify the plot you made for question 10! -->
+```{r}
+#| label: boxplot_with_jitter
 
-Great! Now that you can see the points, you should notice something odd: there
-are two colors of points still being plotted. Some of the observations are being plotted twice, once from `geom_boxplot()` as outliers and again from `geom_jitter()`!
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.2, color = "steelblue") +
+  labs(
+    title = "Distribution of Weight Across Species",
+    x = "Species",
+    y = "Weight (Grams)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+
+Great! Now that you can see the points, you should notice something odd: there are two colors of points still being plotted. Some of the observations are being plotted twice, once from `geom_boxplot()` as outliers and again from `geom_jitter()`!
 
 **14. Inspect the help file for `geom_boxplot()` and see how you can remove the outliers from being plotted by `geom_boxplot()`. Make this change in your code!**
 
-<!-- Continue to modify the plot you made for question 10! -->
+```{r}
+#| label: boxplot_without_outliers
 
-Some small changes can make **big** differences to plots. One of these changes
-are better labels for a plot's axes and legend.
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.2, color = "steelblue") +
+  labs(
+    title = "Distribution of Weight Across Species",
+    x = "Species",
+    y = "Weight (Grams)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 
-**15. Modify the $x$-axis and $y$-axis labels to describe what is being plotted. Be sure to include any necessary units! You might also be getting overlap in the species names -- use `theme(axis.text.x = ____)` or `theme(axis.text.y = ____)` to turn the species axis labels 45 degrees.**
+```
 
-<!-- Continue to modify the plot you made for question 10! -->
+
+Some small changes can make **big** differences to plots. One of these changes are better labels for a plot's axes and legend.
+
+**15. Modify the** $x$-axis and $y$-axis labels to describe what is being plotted. Be sure to include any necessary units! You might also be getting overlap in the species names -- use `theme(axis.text.x = ____)` or `theme(axis.text.y = ____)` to turn the species axis labels 45 degrees.
+
+```{r}
+#| label: boxplot_with_descriptive_labels
+
+ggplot(data = surveys,
+       mapping = aes(x = species, y = weight)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.2, color = "steelblue") +
+  labs(
+    title = "Distribution of Weight Across Species",
+    x = "Species (Name)",
+    y = "Weight (Grams)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
 
 Some people (and journals) prefer for boxplots to be stacked with a specific orientation! Let's practice changing the orientation of our boxplots.
 
@@ -215,24 +346,27 @@ Some people (and journals) prefer for boxplots to be stacked with a specific ori
 
 ```{r}
 #| label: rotated-boxplot
-
+ggplot(data = surveys,
+       mapping = aes(x = weight, y = species)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(height = 0.2, width = 0, alpha = 0.2, color = "steelblue") +
+  labs(
+    title = "Distribution of Weight Across Species",
+    x = "Weight (Grams)",
+    y = "Species (Name)"
+  ) +
+  theme(
+    axis.text.y = element_text(angle = 0) # Ensures y-axis labels are horizontal
+  )
 ```
 
-Notice how vertically stacked boxplots make the species labels more readable
-than horizontally stacked boxplots (even when the axis labels are rotated). 
-This is good practice!
+Notice how vertically stacked boxplots make the species labels more readable than horizontally stacked boxplots (even when the axis labels are rotated). This is good practice!
 
 # Conducting Statistical Analyses
 
-Exploratory Data Analysis (EDA) is always a great start to investigating a 
-dataset. Can we see a relationship between rodent weight and hindfoot length?
-How does rodent weight differ between species? After performing EDA, we can then
-conduct appropriate statistical analyses to formally investigate what we have
-seen.
+Exploratory Data Analysis (EDA) is always a great start to investigating a dataset. Can we see a relationship between rodent weight and hindfoot length? How does rodent weight differ between species? After performing EDA, we can then conduct appropriate statistical analyses to formally investigate what we have seen.
 
-In this section, we are going to conduct a one-way analysis of variance (ANOVA)
-to compare mean weight between the fourteen different species of rodents. If 
-you would like a refresher on ANOVA, here's a good chapter to read: https://openintro-ims.netlify.app/inference-many-means).
+In this section, we are going to conduct a one-way analysis of variance (ANOVA) to compare mean weight between the fourteen different species of rodents. If you would like a refresher on ANOVA, here's a good chapter to read: https://openintro-ims.netlify.app/inference-many-means).
 
 With an ANOVA, we have two hypotheses:
 
@@ -240,21 +374,25 @@ $H_0$: The population mean weight is the same between **all** fourteen rodent sp
 
 $H_A$: **At least one** rodent species has a different population mean weight.
 
-We're going to use the `aov()` function to carry out an ANOVA. 
+We're going to use the `aov()` function to carry out an ANOVA.
 
-**17. Using `aov()`, complete the code below to carry out the analysis.** You 
-might want to look up the help documentation for `aov()`.
+**17. Using `aov()`, complete the code below to carry out the analysis.** You might want to look up the help documentation for `aov()`.
 
 ```{r}
 #| label: anova
 
-species_mod <- aov()
+species_mod <- aov(weight ~ species, data = surveys)
 
 summary(species_mod)
 ```
 
 **18. Based on the results of the ANOVA F-test, draw a conclusion in context of the hypotheses. Make sure to cite appropriate output from above.**
 
+My Conclusion:
+
+The ANOVA F-test results provide strong evidence against the null hypothesis. Because the F value from the test is extremely large,
+and the p-value extremely small, the observed difference in mean
+weights is most likely not by chance.
 
 # Lab 2 Submission
 
