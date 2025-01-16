@@ -4,16 +4,14 @@ author: "Sammy Paykel"
 date: "1/14/2025"
 format: 
   html:
-    embed-resources: true
-    code-tools: true
-    code-fold: true
-    echo: true
     self-contained: true
+    code-fold: true
+    code-tools: true
+    embed-resources: true
     toc: true
     theme: lux
-editor: source
-markdown: 
-  wrap: 72
+editor: 
+  source: true
 execute:
   echo: true
   error: false
@@ -117,6 +115,7 @@ Sources used:
 https://www.statology.org/r-check-data-type/
 
 ```{r}
+#| label: find data types
 data_types <- sapply(surveys, class)
 print(data_types)
 ```
@@ -157,7 +156,7 @@ We can see there are **a lot** of points plotted on top of each other. Let's try
 sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 ```{r}
-#| label: scatterplot
+#| label: scatterplotalpha
 
 ggplot(data = surveys,
        mapping = aes(x = weight,
@@ -174,7 +173,7 @@ Despite our best efforts there is still a substantial amount of overplotting occ
 sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 ```{r}
-#| label: scatterplot
+#| label: scatterplot split
 
 ggplot(data = surveys,
        mapping = aes(x = weight,
@@ -191,7 +190,7 @@ sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 
 ```{r}
-#| label: scatterplot
+#| label: scatterplot axis labels
 
 ggplot(data = surveys,
        mapping = aes(x = weight,
@@ -211,7 +210,7 @@ sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 #\| label: scatterplot
 
 ```{r}
-#| label: scatterplot
+#| label: scatterplot subtitle
 
 ggplot(data = surveys,
        mapping = aes(x = weight,
@@ -256,7 +255,7 @@ sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 
 ```{r}
-#| label: boxplot_with_points
+#| label: boxplot with points
 
 ggplot(data = surveys,
        mapping = aes(x = species, y = weight)) +
@@ -280,7 +279,7 @@ sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 
 ```{r}
-#| label: boxplot_with_jitter
+#| label: boxplot with jitter
 
 ggplot(data = surveys,
        mapping = aes(x = species, y = weight)) +
@@ -305,7 +304,7 @@ sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 
 ```{r}
-#| label: boxplot_with_jitter
+#| label: boxplot with jitter again
 
 ggplot(data = surveys,
        mapping = aes(x = species, y = weight)) +
@@ -330,7 +329,7 @@ sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 
 ```{r}
-#| label: boxplot_without_outliers
+#| label: boxplot without outliers
 
 ggplot(data = surveys,
        mapping = aes(x = species, y = weight)) +
@@ -356,7 +355,7 @@ sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 
 ```{r}
-#| label: boxplot_with_descriptive_labels
+#| label: boxplot with descriptive labels
 
 ggplot(data = surveys,
        mapping = aes(x = species, y = weight)) +
@@ -381,7 +380,7 @@ sources: https://rstudio.github.io/cheatsheets/html/data-visualization.html
 
 
 ```{r}
-#| label: rotated-boxplot
+#| label: rotated boxplot
 ggplot(data = surveys,
        mapping = aes(x = weight, y = species)) +
   geom_boxplot(outlier.shape = NA) +
